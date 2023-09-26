@@ -5,11 +5,16 @@
   </head>
   <body>
     <h1>IMDb Episode Durations</h1>
-    <h2>Total Runtime is {{ episode_durations|sum }} minutes</h2>
-    <ul>
-      {% for duration in episode_durations %}
-      <li>{{ duration }} minutes</li>
-      {% endfor %}
-    </ul>
+    {% set total_minutes = episode_durations|sum %}
+    <h2>
+      Total Runtime is {{ total_minutes}} minutes or {{ total_minutes // 60 }}
+      hours and {{ total_minutes % 60 }} minutes
+    </h2>
+    <p>{{ episode_durations|length}} episodes processed</p>
+    <p>Episode Durations: [{{ episode_durations|join(', ') }}]</p>
+    <p>Time Taken: {{ generation_time }} seconds</p>
+    <form action="/" method="GET">
+      <button type="submit">Input Another IMDb ID</button>
+    </form>
   </body>
 </html>

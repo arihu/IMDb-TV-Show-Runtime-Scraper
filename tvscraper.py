@@ -26,13 +26,13 @@ def scrape_imdb(imdb_id):
     """
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     ##Debug
-    print("\nurl: " + url)
+    ##print("\nurl: " + url)
 
     # Each episode block is inside div of class lister-item mode-simple
     episode_durations = []
     episodes = episodelist_soup.find_all("div", class_="lister-item mode-simple")
     if len(episodes) == 0:
-        print("Not a TV show or Invalid ID")
+        ##print("Not a TV show or Invalid ID")
         return []
 
     for episode in episodes:
@@ -43,8 +43,7 @@ def scrape_imdb(imdb_id):
             episode_url_path = episode_link["href"]
             episode_url = f"https://m.imdb.com{episode_url_path}"
 
-            ##Debug
-            print("\nepisode url: " + episode_url)
+            ##print("\nepisode url: " + episode_url)
 
             driver.get(episode_url)
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -60,15 +59,17 @@ def scrape_imdb(imdb_id):
                 runtime_text = driver.execute_script(
                     "return document.querySelector('li[data-testid=\"title-techspec_runtime\"] div').textContent;"
                 )
-                print("runtime text: " + runtime_text)
+                ##print("runtime text: " + runtime_text)
                 duration_minutes = parse_duration(runtime_text)
-                print("runtime in minutes: " + str(duration_minutes))
+                ##print("runtime in minutes: " + str(duration_minutes))
                 episode_durations.append(duration_minutes)
             except Exception as e:
+                '''
                 print(
                     "episode url has no runtime, episode not released, or misc. error"
                 )
                 print("Error:", str(e))
+                '''
                 continue
 
     driver.quit()
