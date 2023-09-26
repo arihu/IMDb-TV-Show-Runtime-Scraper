@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IMDb Episode Durations</title>
+  </head>
+  <body>
+    <h1>IMDb Episode Durations</h1>
+    <h2>Total Runtime is {{ episode_durations|sum }} minutes</h2>
+    <ul>
+      {% for duration in episode_durations %}
+      <li>{{ duration }} minutes</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
