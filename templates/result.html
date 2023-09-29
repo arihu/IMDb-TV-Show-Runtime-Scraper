@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>IMDb Episode Durations</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <title>IMDb Episode Duration Scraper</title>
   </head>
-  <body>
-    <h1>IMDb Episode Durations</h1>
-    {% set total_minutes = episode_durations|sum %}
-    <h2>
-      Total Runtime is {{ total_minutes}} minutes or {{ total_minutes // 60 }}
-      hours and {{ total_minutes % 60 }} minutes
-    </h2>
-    <p>{{ episode_durations|length}} episodes processed</p>
-    <p>Episode Durations: [{{ episode_durations|join(', ') }}]</p>
-    <p>Time Taken: {{ generation_time }} seconds</p>
-    <form action="/" method="GET">
-      <button type="submit">Input Another IMDb ID</button>
-    </form>
+  <body class="bg-color">
+    <div class="container">
+      <h1>IMDb Episode Duration Scraper</h1>
+      {% if episode_durations|length == 0 %}
+      <p class="invalid-text">Not a TV show, or invalid IMDb ID</p>
+      {% else %} {% set total_minutes = episode_durations|sum %}
+      <h2>
+        Total Runtime is {{ total_minutes}} minutes or {{ total_minutes // 60 }}
+        hours and {{ total_minutes % 60 }} minutes
+      </h2>
+      <p>{{ episode_durations|length}} episodes processed</p>
+      <p>Episode Durations: [{{ episode_durations|join(', ') }}]</p>
+      <p>Time Taken: {{ generation_time }} seconds</p>
+      {% endif %}
+      <form action="/" method="GET">
+        <button type="submit">Input Another IMDb ID</button>
+      </form>
+    </div>
   </body>
 </html>

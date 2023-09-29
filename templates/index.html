@@ -3,25 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <style>
-      /* Hide the message by default */
-      #loading-message {
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <title>IMDb Episode Duration Scraper</title>
   </head>
-  <body>
-    <h1>IMDb Episode Duration Scraper</h1>
-    <p>Only works for shows with less than 250 episodes</p>
-    <form method="POST" onsubmit="showLoadingMessage()">
-      <label for="imdb_id">Enter IMDb ID of TV show:</label>
-      <input type="text" id="imdb_id" name="imdb_id" required />
-      <button type="submit">Submit</button>
-      <p id="loading-message">
-        Generating Response(~20 sec per episode), Please Wait...
-      </p>
-    </form>
+  <body class="bg-color">
+    <div class="container">
+      <h1>IMDb Episode Duration Scraper</h1>
+      <p>Only works for shows with less than 250 episodes</p>
+      <form method="POST" onsubmit="showLoadingMessage()">
+        <label for="imdb_id">Enter IMDb ID of TV show:</label>
+        <input type="text" id="imdb_id" name="imdb_id" required />
+        <button type="submit">Submit</button>
+        <p id="loading-message">
+          Generating Response(~20 sec per episode), Please Wait...
+        </p>
+      </form>
+    </div>
     <script>
       function showLoadingMessage() {
         document.getElementById("loading-message").style.display = "block";
