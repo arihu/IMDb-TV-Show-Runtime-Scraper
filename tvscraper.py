@@ -8,7 +8,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+import threading
 
+DEBUG = True
 
 def scrape_imdb(imdb_id):
     # Get list of episodes given imdb id
@@ -24,15 +26,16 @@ def scrape_imdb(imdb_id):
         options=options, service=Service(ChromeDriverManager().install())
     )
     """
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    ##Debug
-    ##print("\nurl: " + url)
+    options = Options()
+    options.add_extension("./static/uBlockOrigin.crx")
+    driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
+    debug_print("\nurl: " + url)
 
     # Each episode block is inside div of class lister-item mode-simple
     episode_durations = []
     episodes = episodelist_soup.find_all("div", class_="lister-item mode-simple")
     if len(episodes) == 0:
-        ##print("Not a TV show or Invalid ID")
+        debug_print("Not a TV show or Invalid ID")
         return []
 
     for episode in episodes:
@@ -43,34 +46,35 @@ def scrape_imdb(imdb_id):
             episode_url_path = episode_link["href"]
             episode_url = f"https://m.imdb.com{episode_url_path}"
 
-            ##print("\nepisode url: " + episode_url)
+            debug_print("\nepisode url: " + episode_url)
 
             driver.get(episode_url)
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            #Scroll down webpage for dynamically loaded episode page
+            last_height = driver.execute_script("return document.body.scrollHeight")
+            while True:
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
+                time.sleep(0.5) 
+                new_height = driver.execute_script("return document.body.scrollHeight") 
+                if new_height == last_height:
+                    break
+                last_height = new_height
 
-            # runtime is found in li tag of data-testid="title-techspec-runtime", in the child div element
-            # in form x minutes or x minutes y hours
-            # ex:
+            episode_soup = BeautifulSoup(driver.page_source, "html.parser")
+            # runtime is found in li tag of data-testid="title-techspec-runtime", in the child div element in form x minutes or x minutes y hours ex:
             # <li role="presentation" class="ipc-metadata-list__item" data-testid="title-techspec_runtime">
             #   <span class="ipc-metadata-list-item__label" aria-disabled="false">Runtime</span>
             #   <div class="ipc-metadata-list-item__content-container">1<!-- --> <!-- -->hour<!-- --> <!-- -->28<!-- --> <!-- -->minutes</div>
             # </li>
-            try:
-                runtime_text = driver.execute_script(
-                    "return document.querySelector('li[data-testid=\"title-techspec_runtime\"] div').textContent;"
-                )
-                ##print("runtime text: " + runtime_text)
+            li_element = episode_soup.find('li', {'data-testid': 'title-techspec_runtime'})
+            if li_element:
+                div_element = li_element.find('div')
+                runtime_text = div_element.get_text()
+                debug_print("runtime text: " + runtime_text)
                 duration_minutes = parse_duration(runtime_text)
-                ##print("runtime in minutes: " + str(duration_minutes))
+                debug_print("runtime in minutes: " + str(duration_minutes))
                 episode_durations.append(duration_minutes)
-            except Exception as e:
-                '''
-                print(
-                    "episode url has no runtime, episode not released, or misc. error"
-                )
-                print("Error:", str(e))
-                '''
-                continue
+            else:
+                debug_print("Runtime not found")
 
     driver.quit()
     return episode_durations
@@ -100,3 +104,7 @@ def parse_duration(duration_str):
     # Calculate the total duration in minutes
     total_minutes = hours * 60 + minutes
     return total_minutes
+
+def debug_print(msg):
+    if DEBUG:
+        print(msg)
