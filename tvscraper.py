@@ -4,11 +4,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-import threading
 
 DEBUG = True
 
@@ -17,7 +13,7 @@ def scrape_imdb(imdb_id):
     url = f"https://m.imdb.com/search/title/?series={imdb_id}&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
     episodelist = requests.get(url)
     episodelist_soup = BeautifulSoup(episodelist.text, "html.parser")
-    ###Headless mode
+    ###TODO: Headless mode, Doesn't work for now
     """
     options = Options()
     options.add_argument("--headless=new")
@@ -79,7 +75,7 @@ def scrape_imdb(imdb_id):
     driver.quit()
     return episode_durations
 
-
+#turns x minute(s) or x hour(s) y minute(s) to integer value of minutes
 def parse_duration(duration_str):
     words = duration_str.split()
     hours = 0
@@ -101,10 +97,10 @@ def parse_duration(duration_str):
         elif word == "minute" or word == "minutes":
             minutes = 1
         i += 1
-    # Calculate the total duration in minutes
     total_minutes = hours * 60 + minutes
     return total_minutes
 
+#used for debugging
 def debug_print(msg):
     if DEBUG:
         print(msg)
