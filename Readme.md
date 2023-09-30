@@ -49,6 +49,12 @@ The runtime data of each episode page is found in a div element within a li of d
 
 After all episodes are iterated, the webpage updates with the episode_duration list, the episode_duration length(episodes processed), and episode_duration sum(total duration).
 
+## Demo
+
+Here is an example of calculating the exact runtime of Breaking Bad
+![index](./static/scraper-img0.PNG)
+![result](./static/scraper-img1.PNG)
+
 ## Problems
 
 - Selenium "--headless=new" mode does not work
