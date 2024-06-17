@@ -1,5 +1,5 @@
-# IMDb TV Show Runtime Scraper
-
+# IMDb TV Show Runtime Scraper (Outdated)
+## Currently Outdated due to IMDb site change
 A webpage that will take a given IMDb TV Show id and return the total runtime in minutes as given in each episode's runtime description with BeautifulSoup and Selenium.
 
 ## Why?
